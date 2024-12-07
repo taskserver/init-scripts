@@ -6,7 +6,7 @@ export NERDCTL_VERSION=2.0.1
 
 echo "Installing nerdctl version ${NERDCTL_VERSION} for ${ARCH}..."
 
-# Correct URL
+# Correct URL with no 'v' prefix in the filename
 NERDCTL_URL="https://github.com/containerd/nerdctl/releases/download/v${NERDCTL_VERSION}/nerdctl-${NERDCTL_VERSION}-linux-${ARCH}.tar.gz"
 
 # Download and verify
