@@ -2,18 +2,19 @@
 
 # Define variables
 export ARCH=arm64
-export NERDCTL_VERSION=v2.0.1
+export NERDCTL_VERSION=2.0.1
 
 echo "Installing nerdctl version ${NERDCTL_VERSION} for ${ARCH}..."
 
-# Define download URL
-NERDCTL_URL="https://github.com/containerd/nerdctl/releases/download/${NERDCTL_VERSION}/nerdctl-${NERDCTL_VERSION}-linux-${ARCH}.tar.gz"
+# Correct URL
+NERDCTL_URL="https://github.com/containerd/nerdctl/releases/download/v${NERDCTL_VERSION}/nerdctl-${NERDCTL_VERSION}-linux-${ARCH}.tar.gz"
 
 # Download and verify
+echo "Downloading nerdctl from: $NERDCTL_URL"
 if curl -fSL "$NERDCTL_URL" -o /tmp/nerdctl.tar.gz; then
     echo "Download successful. Extracting nerdctl..."
 else
-    echo "Failed to download nerdctl from $NERDCTL_URL"
+    echo "Failed to download nerdctl from $NERDCTL_URL. Please check the version and architecture."
     exit 1
 fi
 
