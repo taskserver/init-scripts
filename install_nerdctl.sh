@@ -6,7 +6,7 @@ export NERDCTL_VERSION=2.0.1
 
 echo "Installing nerdctl version ${NERDCTL_VERSION} for ${ARCH}..."
 
-# Correct URL with no 'v' prefix in the filename
+# Correct URL
 NERDCTL_URL="https://github.com/containerd/nerdctl/releases/download/v${NERDCTL_VERSION}/nerdctl-${NERDCTL_VERSION}-linux-${ARCH}.tar.gz"
 
 # Download and verify
@@ -30,13 +30,17 @@ fi
 # Clean up
 rm -f /tmp/nerdctl.tar.gz
 
-# Verify installation
-if command -v nerdctl &> /dev/null; then
-    nerdctl --version
-else
-    echo "nerdctl installation failed."
-    exit 1
-fi
+# Ensure ubuntu user has access to containerd.sock
+echo "Granting ubuntu user access to containerd socket..."
+sudo usermod -aG containerd ubuntu
+sudo chmod 660 /run/containerd/containerd.sock
+sudo chown root:containerd /run/containerd/containerd.sock
+
+# Ensure changes take effect
+echo "Applying group changes for ubuntu user..."
+newgrp containerd <<EONG
+nerdctl --version
+EONG
 
 # Ensure containerd is running
 if ! systemctl is-active --quiet containerd; then
@@ -45,4 +49,4 @@ if ! systemctl is-active --quiet containerd; then
     sudo systemctl enable containerd
 fi
 
-echo "nerdctl installation and setup complete!"
+echo "nerdctl installation and setup complete! You can now run nerdctl without sudo as the ubuntu user."
